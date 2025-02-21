@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice XML Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .section { 
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .section h2 { margin-top: 0; }
+        .form-group {
+            margin-bottom: 10px;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+        .form-group label { font-weight: bold; }
+        input, select { padding: 5px; width: 100%; box-sizing: border-box; }
+        .items-section { margin-top: 20px; }
+        .item-row {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr) 50px;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .item-header {
+            font-weight: bold;
+            background: #f0f0f0;
+            padding: 5px;
+        }
+        button {
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background: #0056b3; }
+        .delete-btn {
+            background: #dc3545;
+            padding: 5px 10px;
+        }
+        .delete-btn:hover { background: #c82333; }
+        .totals {
+            margin-top: 20px;
+            text-align: right;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Invoice XML Generator</h1>
+        
+        <div class="section">
+            <h2>Rēķina detaļas</h2>
+            <div class="form-group">
+                <label>CustomizationID:</label>
+                <input type="text" id="customizationId" value="urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0">
+            </div>
+            <div class="form-group">
+                <label>ProfileID:</label>
+                <input type="text" id="profileId" value="urn:fdc:peppol.eu:2017:poacc:billing:01:1.0">
+            </div>
+            <div class="form-group">
+                <label>Rēķina numurs:</label>
+                <input type="text" id="invoiceId" value="RN-2025-01">
+            </div>
+            <div class="form-group">
+                <label>Rēķina izrakstīšanas datums:</label>
+                <input type="date" id="issueDate">
+            </div>
+            <div class="form-group">
+                <label>Samaksas termiņš:</label>
+                <input type="date" id="dueDate">
+            </div>
+            <div class="form-group">
+                <label>Rēķina veida kods:</label>
+                <input type="text" id="invoiceTypeCode" value="380">
+            </div>
+            <div class="form-group">
+                <label>Piezīmes:</label>
+                <input type="text" id="note">
+            </div>
+            <div class="form-group">
+                <label>Valūta:</label>
+                <input type="text" id="documentCurrencyCode" value="EUR">
+            </div>
+            <div class="form-group">
+                <label>Maksātāja reģistrācijas numurs:</label>
+                <input type="text" id="buyerReference">
+            </div>
+            <div class="form-group">
+                <label>Rēķina pamatojuma Līguma numurs:</label>
+                <input type="text" id="contractDocumentReference">
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Informācija par pakalpojuma piegādātāju</h2>
+            <div class="form-group">
+                <label>Endpoint ID:</label>
+                <input type="text" id="supplierEndpointId">
+            </div>
+            <div class="form-group">
+                <label>Piegādātāja reģistrācijas numurs:</label>
+                <input type="text" id="supplierPartyId">
+            </div>
+            <div class="form-group">
+                <label>Piegādātāja uzņēmuma nosaukums:</label>
+                <input type="text" id="supplierName">
+            </div>
+            <div class="form-group">
+                <label>Piegādātāja adrese:</label>
+                <input type="text" id="supplierAddress">
+            </div>
+            <div class="form-group">
+                <label>Piegādātāja valsts kods:</label>
+                <input type="text" id="supplierCountry" value="LV">
+            </div>
+            <div class="form-group">
+                <label>Piegādātāja reģistrācijas nosaukums:</label>
+                <input type="text" id="supplierRegistrationName">
+            </div>
+            <div class="form-group">
+                <label>PVN maksātājua numurs:</label>
+                <input type="text" id="supplierCompanyId">
+            </div>
+            <div class="form-group">
+                <label>Nodokļu maksāšanas veids:</label>
+                <input type="text" id="supplierVatNumber">
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Pakalpojuma pasūtītāja informācija</h2>
+            <div class="form-group">
+                <label>Endpoint ID:</label>
+                <input type="text" id="customerEndpointId">
+            </div>
+            <div class="form-group">
+                <label>Pasūtītāja reģistrācijas numurs:</label>
+                <input type="text" id="customerPartyId">
+            </div>
+            <div class="form-group">
+                <label>Pasūtītāja nosaukums:</label>
+                <input type="text" id="customerName">
+            </div>
+            <div class="form-group">
+                <label>Pasūtītāja adrese:</label>
+                <input type="text" id="customerAddress">
+            </div>
+            <div class="form-group">
+                <label>Pasūtītāja valsts kods:</label>
+                <input type="text" id="customerCountry" value="LV">
+            </div>
+            <div class="form-group">
+                <label>Pasūtītāja reģistrācijas nosaukums:</label>
+                <input type="text" id="customerRegistrationName">
+            </div>
+            <div class="form-group">
+                <label>PVN maksātāja numurs:</label>
+                <input type="text" id="customerCompanyId">
+            </div>
+            <div class="form-group">
+                <label>Nodokļu maksāšanas veids:</label>
+                <input type="text" id="customerVatNumber">
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Maksājuma informācija</h2>
+            <div class="form-group">
+                <label>Maksājuma veida kods:</label>
+                <input type="text" id="paymentMeansCode" value="30">
+            </div>
+            <div class="form-group">
+                <label>Maksājuma saņēmēja konta numurs:</label>
+                <input type="text" id="payeeAccountId">
+            </div>
+            <div class="form-group">
+                <label>Maksājuma saņēmēja bankas kods:</label>
+                <input type="text" id="payeeFinancialInstitutionId">
+            </div>
+            <div class="form-group">
+                <label>Maksātāja konta numurs:</label>
+                <input type="text" id="payerAccountId">
+            </div>
+            <div class="form-group">
+                <label>Maksātāja bankas kods:</label>
+                <input type="text" id="payerFinancialInstitutionId">
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Pasūtījuma pozīcijas</h2>
+            <div class="item-row item-header">
+                <div>Nosaukums</div>
+                <div>Apjoms</div>
+                <div>Mērvienības kods</div>
+                <div>Cena</div>
+                <div>PVN %</div>
+                <div>Kopā</div>
+                <div></div>
+            </div>
+            <div id="itemsContainer"></div>
+            <button onclick="addItem()">Pievienot pozīciju</button>
+            
+            <div class="totals">
+                <div>Kopā par katru: <span id="subtotal">0.00</span> EUR</div>
+                <div>PVN: <span id="vatAmount">0.00</span> EUR</div>
+                <div>Kopā: <span id="total">0.00</span> EUR</div>
+                <div>Avansa apjoms: <input type="number" id="prepaidAmount" value="0" style="width: 100px" onchange="calculateTotals()"> EUR</div>
+                <div>Maksājums: <span id="payableAmount">0.00</span> EUR</div>
+            </div>
+        </div>
+
+        <button onclick="generateXML()" style="margin-top: 20px; width: 100%;">Ģenerēt strukturēto rēķinu</button>
+    </div>
+
+    <script>
+        let items = [];
+
+        function addItem() {
+            items.push({
+                id: items.length + 1,
+                name: '',
+                quantity: '1.00',
+                unitCode: 'H87',
+                price: '0.00',
+                vatRate: '21'
+            });
+            renderItems();
+        }
+
+        function deleteItem(index) {
+            items.splice(index, 1);
+            renderItems();
+        }
+
+        function updateItem(index, field, value) {
+            items[index][field] = value;
+            renderItems();
+        }
+
+        function calculateTotals() {
+            let subtotal = 0;
+            items.forEach(item => {
+                const quantity = parseFloat(item.quantity) || 0;
+                const price = parseFloat(item.price) || 0;
+                subtotal += quantity * price;
+            });
+
+            const vatAmount = subtotal * 0.21; // 21% VAT
+            const total = subtotal + vatAmount;
+            const prepaidAmount = parseFloat(document.getElementById('prepaidAmount').value) || 0;
+            const payableAmount = total - prepaidAmount;
+
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('vatAmount').textContent = vatAmount.toFixed(2);
+            document.getElementById('total').textContent = total.toFixed(2);
+            document.getElementById('payableAmount').textContent = payableAmount.toFixed(2);
+        }
+
+        function renderItems() {
+            const container = document.getElementById('itemsContainer');
+            container.innerHTML = items.map((item, index) => `
+                <div class="item-row">
+                    <input type="text" value="${item.name}" onchange="updateItem(${index}, 'name', this.value)">
+                    <input type="number" step="0.01" value="${item.quantity}" onchange="updateItem(${index}, 'quantity', this.value)">
+                    <input type="text" value="${item.unitCode}" onchange="updateItem(${index}, 'unitCode', this.value)">
+                    <input type="number" step="0.01" value="${item.price}" onchange="updateItem(${index}, 'price', this.value)">
+                    <input type="number" value="${item.vatRate}" onchange="updateItem(${index}, 'vatRate', this.value)">
+                    <div>${((parseFloat(item.quantity) || 0) * (parseFloat(item.price) || 0)).toFixed(2)}</div>
+                    <button class="delete-btn" onclick="deleteItem(${index})">X</button>
+                </div>
+            `).join('');
+            calculateTotals();
+        }
+
+        function generateXML() {
+            const getFieldValue = (id) => document.getElementById(id).value;
+            
+            let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+        xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+        xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
+    <cbc:CustomizationID>${getFieldValue('customizationId')}</cbc:CustomizationID>
+    <cbc:ProfileID>${getFieldValue('profileId')}</cbc:ProfileID>
+    <cbc:ID>${getFieldValue('invoiceId')}</cbc:ID>
+    <cbc:IssueDate>${getFieldValue('issueDate')}</cbc:IssueDate>
+    <cbc:DueDate>${getFieldValue('dueDate')}</cbc:DueDate>
+    <cbc:InvoiceTypeCode>${getFieldValue('invoiceTypeCode')}</cbc:InvoiceTypeCode>
+    <cbc:Note>${getFieldValue('note')}</cbc:Note>
+    <cbc:DocumentCurrencyCode>${getFieldValue('documentCurrencyCode')}</cbc:DocumentCurrencyCode>
+    <cbc:BuyerReference>${getFieldValue('buyerReference')}</cbc:BuyerReference>
+    <cac:ContractDocumentReference>
+        <cbc:ID>${getFieldValue('contractDocumentReference')}</cbc:ID>
+    </cac:ContractDocumentReference>
+    
+    <cac:AccountingSupplierParty>
+        <cac:Party>
+            <cbc:EndpointID schemeID="9939">${getFieldValue('supplierEndpointId')}</cbc:EndpointID>
+            <cac:PartyIdentification>
+                <cbc:ID>${getFieldValue('supplierPartyId')}</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyName>
+                <cbc:Name>${getFieldValue('supplierName')}</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cac:AddressLine>
+                    <cbc:Line>${getFieldValue('supplierAddress')}</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode>${getFieldValue('supplierCountry')}</cbc:IdentificationCode>
+                </cac:Country>
+            </cac:PostalAddress>
+            <cac:PartyTaxScheme>
+                <cbc:CompanyID>${getFieldValue('supplierVatNumber')}</cbc:CompanyID>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:PartyTaxScheme>
+            <cac:PartyLegalEntity>
+                <cbc:RegistrationName>${getFieldValue('supplierRegistrationName')}</cbc:RegistrationName>
+                <cbc:CompanyID>${getFieldValue('supplierCompanyId')}</cbc:CompanyID>
+            </cac:PartyLegalEntity>
+        </cac:Party>
+    </cac:AccountingSupplierParty>
+    
+	<cac:AccountingCustomerParty>
+		<cac:Party>
+			<cbc:EndpointID schemeID="9939">${getFieldValue('customerEndpointId')}</cbc:EndpointID>
+			<cac:PartyIdentification>
+				<cbc:ID>${getFieldValue('customerPartyId')}</cbc:ID>
+			</cac:PartyIdentification>
+			<cac:PartyName>
+				<cbc:Name>${getFieldValue('customerName')}</cbc:Name>
+			</cac:PartyName>
+			<cac:PostalAddress>
+				<cac:AddressLine>
+					<cbc:Line>${getFieldValue('customerAddress')}</cbc:Line>
+				</cac:AddressLine>
+				<cac:Country>
+					<cbc:IdentificationCode>${getFieldValue('customerCountry')}</cbc:IdentificationCode>
+				</cac:Country>
+			</cac:PostalAddress>
+			<cac:PartyTaxScheme>
+				<cbc:CompanyID>${getFieldValue('customerVatNumber')}</cbc:CompanyID>
+				<cac:TaxScheme>
+					<cbc:ID>VAT</cbc:ID>
+				</cac:TaxScheme>
+			</cac:PartyTaxScheme>
+			<cac:PartyLegalEntity>
+				<cbc:RegistrationName>${getFieldValue('customerRegistrationName')}</cbc:RegistrationName>
+				<cbc:CompanyID>${getFieldValue('customerCompanyId')}</cbc:CompanyID>
+			</cac:PartyLegalEntity>
+		</cac:Party>
+	</cac:AccountingCustomerParty>
+
+	<cac:PaymentMeans>
+		<cbc:PaymentMeansCode>${getFieldValue('paymentMeansCode')}</cbc:PaymentMeansCode>
+		<cac:PayeeFinancialAccount>
+			<cbc:ID>${getFieldValue('payeeAccountId')}</cbc:ID>
+			<cac:FinancialInstitutionBranch>
+				<cbc:ID>${getFieldValue('payeeFinancialInstitutionId')}</cbc:ID>
+			</cac:FinancialInstitutionBranch>
+		</cac:PayeeFinancialAccount>
+		<cac:PaymentMandate>
+			<cac:PayerFinancialAccount>
+				<cbc:ID>${getFieldValue('payerAccountId')}</cbc:ID>
+				<cac:FinancialInstitutionBranch>
+					<cbc:ID>${getFieldValue('payerFinancialInstitutionId')}</cbc:ID>
+				</cac:FinancialInstitutionBranch>
+			</cac:PayerFinancialAccount>
+		</cac:PaymentMandate>
+	</cac:PaymentMeans>
+
+	<cac:TaxTotal>
+		<cbc:TaxAmount currencyID="EUR">${document.getElementById('vatAmount').textContent}</cbc:TaxAmount>
+		<cac:TaxSubtotal>
+			<cbc:TaxableAmount currencyID="EUR">${document.getElementById('subtotal').textContent}</cbc:TaxableAmount>
+			<cbc:TaxAmount currencyID="EUR">${document.getElementById('vatAmount').textContent}</cbc:TaxAmount>
+			<cac:TaxCategory>
+				<cbc:ID>S</cbc:ID>
+				<cbc:Name>VAT 21%</cbc:Name>
+				<cbc:Percent>21</cbc:Percent>
+				<cac:TaxScheme>
+					<cbc:ID>VAT</cbc:ID>
+				</cac:TaxScheme>
+			</cac:TaxCategory>
+		</cac:TaxSubtotal>
+	</cac:TaxTotal>
+
+	<cac:LegalMonetaryTotal>
+		<cbc:LineExtensionAmount currencyID="EUR">${document.getElementById('subtotal').textContent}</cbc:LineExtensionAmount>
+		<cbc:TaxExclusiveAmount currencyID="EUR">${document.getElementById('subtotal').textContent}</cbc:TaxExclusiveAmount>
+		<cbc:TaxInclusiveAmount currencyID="EUR">${document.getElementById('total').textContent}</cbc:TaxInclusiveAmount>
+		<cbc:PrepaidAmount currencyID="EUR">${getFieldValue('prepaidAmount')}</cbc:PrepaidAmount>
+		<cbc:PayableAmount currencyID="EUR">${document.getElementById('payableAmount').textContent}</cbc:PayableAmount>
+	</cac:LegalMonetaryTotal>
+
+	${items.map((item, index) => `
+	<cac:InvoiceLine>
+		<cbc:ID>${index + 1}</cbc:ID>
+		<cbc:InvoicedQuantity unitCode="${item.unitCode}">${parseFloat(item.quantity).toFixed(2)}</cbc:InvoicedQuantity>
+		<cbc:LineExtensionAmount currencyID="EUR">${(parseFloat(item.quantity) * parseFloat(item.price)).toFixed(2)}</cbc:LineExtensionAmount>
+		<cac:AllowanceCharge>
+			<cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+			<cbc:AllowanceChargeReason>-</cbc:AllowanceChargeReason>
+			<cbc:Amount currencyID="EUR">0.00</cbc:Amount>
+		</cac:AllowanceCharge>
+		<cac:Item>
+			<cbc:Name>${item.name}</cbc:Name>
+			<cac:ClassifiedTaxCategory>
+				<cbc:ID>S</cbc:ID>
+				<cbc:Percent>${parseFloat(item.vatRate).toFixed(2)}</cbc:Percent>
+				<cac:TaxScheme>
+					<cbc:ID>VAT</cbc:ID>
+				</cac:TaxScheme>
+			</cac:ClassifiedTaxCategory>
+		</cac:Item>
+		<cac:Price>
+			<cbc:PriceAmount currencyID="EUR">${parseFloat(item.price).toFixed(4)}</cbc:PriceAmount>
+			<cbc:BaseQuantity>1.00</cbc:BaseQuantity>
+		</cac:Price>
+	</cac:InvoiceLine>
+	`).join('')}
+
+</Invoice>`;
+
+const blob = new Blob([xml], { type: 'application/xml' });
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = 'invoice.xml';
+a.click();
+URL.revokeObjectURL(url);
+}
+
+// Initialize with one empty item by default
+addItem();
+</script>
+</body>
+</html>
