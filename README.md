@@ -49,5 +49,6 @@ Validācija palīdz pārliecināties, ka fails atbilst PEPPOL prasībām.
 
 ---
 
-Šis projekts atvieglo strukturēto e-rēķinu izveidi un to atbilstību Eiropas elektronisko rēķinu standartiem.
+Šis projekts atvieglo strukturēto e-rēķinu izveidi un to atbilstību Eiropas elektronisko rēķinu standartiem. Pārbaudīts, augšuplādējot to Latvija.lv sistēmā un pievienojot e-adresei.
 
+![image](https://github.com/user-attachments/assets/0ab12e6f-f72c-41ec-92d4-f1f481344c5b)
