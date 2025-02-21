@@ -1,4 +1,4 @@
-# XML rēķinu ģenerators atbilstoši PEPPOL standartam
+# strukturēto rēķinu (xml) ģenerators atbilstoši PEPPOL standartam
 
 ## Apraksts
 
