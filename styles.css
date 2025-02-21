@@ -76,3 +76,14 @@ button:hover { background: #0056b3; }
     align-items: center;
     gap: 5px;
 }
+
+.github-link {
+  font-size: 16px;
+  margin-left: 10px;
+  text-decoration: none;
+  color: #007bff;
+}
+
+.github-link:hover {
+  text-decoration: underline;
+}
