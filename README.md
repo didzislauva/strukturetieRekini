@@ -21,6 +21,7 @@
 Izveidotos XML failus varat pārbaudīt tiešsaistes validācijas rīkā:
 
 - [Ecosio PEPPOL un XML dokumentu validētājs](https://ecosio.com/en/peppol-and-xml-document-validator/)
+- [Eiropas Savienības eInvoice validētājs](https://www.itb.ec.europa.eu/invoice/upload)
 
 Validācija palīdz pārliecināties, ka fails atbilst PEPPOL prasībām.
 
