@@ -1,0 +1,78 @@
+body { font-family: Arial, sans-serif; margin: 20px; }
+.container { max-width: 1200px; margin: 0 auto; }
+.section { 
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+.section h2 { margin-top: 0; }
+.form-group {
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 10px;
+    align-items: center;
+}
+.form-group label { font-weight: bold; }
+input, select { padding: 5px; width: 100%; box-sizing: border-box; }
+.items-section { margin-top: 20px; }
+.item-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr) 50px;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.item-header {
+    font-weight: bold;
+    background: #f0f0f0;
+    padding: 5px;
+}
+button {
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover { background: #0056b3; }
+.delete-btn {
+    background: #dc3545;
+    padding: 5px 10px;
+}
+.delete-btn:hover { background: #c82333; }
+.totals {
+    margin-top: 20px;
+    text-align: right;
+    font-weight: bold;
+}
+.hidden-locked {
+	display: none;
+}
+
+ .error {
+        border: 1px solid red;
+    }
+	
+.advanced-toggle {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.advanced-toggle button {
+    background: #28a745;
+}
+
+.advanced-toggle button:hover {
+    background: #218838;
+}
+
+.unlock-label {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}

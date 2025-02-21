@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice XML Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .section-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Strukturēto rēķinu ģenerators</h1>
+        
+        <div class="advanced-toggle">
+			<button onclick="toggleAdvanced()">Pilnie uzstādījumi</button>
+			<div class="advancedSection hidden-locked">
+			<label class="unlock-label hidden-locked" id="advancedSection">
+				<input type="checkbox" id="unlockCheckbox" onchange="toggleLock(this.checked)" >
+				Atļaut rediģēšanu
+			</label>
+			</div>
+		</div>
+
+        <div class="section">
+            <h2>Rēķina detaļas</h2>
+            <!-- Invoice details content stays the same -->
+            <div class="form-group advancedSection hidden-locked">
+                <label>CustomizationID:</label>
+                <input type="text" id="customizationId" value="urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0" disabled class="lockable-input">
+            </div>
+            <div class="form-group advancedSection hidden-locked">
+                <label>ProfileID:</label>
+                <input type="text" id="profileId" value="urn:fdc:peppol.eu:2017:poacc:billing:01:1.0" disabled class="lockable-input">
+            </div>
+            <div class="form-group">
+                <label>Rēķina numurs:</label>
+                <input type="text" id="invoiceId" value="RN-2025-01">
+            </div>
+            <div class="form-group">
+                <label>Rēķina izrakstīšanas datums:</label>
+                <input type="date" id="issueDate">
+            </div>
+            <div class="form-group">
+                <label>Samaksas termiņš:</label>
+                <input type="date" id="dueDate" onchange="updateDueDateLabel()">
+            </div>
+			<div id="dueDateLabel">Apmaksas termiņš - 14 dienas</div>
+            <div class="form-group advancedSection hidden-locked">
+                <label>Rēķina veida kods:</label>
+                <input type="text" id="invoiceTypeCode" value="380" disabled class="lockable-input">
+            </div>
+            <div class="form-group">
+                <label>Piezīmes:</label>
+                <input type="text" id="note">
+            </div>
+            <div class="form-group">
+                <label>Valūta:</label>
+                <input type="text" id="documentCurrencyCode" value="EUR" disabled class="lockable-input">
+            </div>
+            <div class="form-group advancedSection hidden-locked">
+                <label>Maksātāja reģistrācijas numurs:</label>
+                <input type="text" id="buyerReference" disabled class="lockable-input">
+            </div>
+            <div class="form-group">
+                <label>Rēķina pamatojuma Līguma numurs:</label>
+                <input type="text" id="contractDocumentReference">
+            </div>
+        </div>
+
+        <div class="section-grid">
+            <!-- Supplier Section -->
+            <div class="section">
+                <h2>Informācija par pakalpojuma piegādātāju</h2>
+                <div class="form-group advancedSection hidden-locked">
+                    <label>Endpoint ID:</label>
+                    <input type="text" id="supplierEndpointId" disabled class="lockable-input">
+                </div>
+                <div class="form-group">
+                    <label>Piegādātāja reģistrācijas numurs:</label>
+                    <input type="text" id="supplierPartyId" oninput="syncSupplierIds(this.value)">
+                </div>
+                <div class="form-group">
+                    <label>Piegādātāja uzņēmuma nosaukums:</label>
+                    <input type="text" id="supplierName" oninput="syncSupplierName(this.value)">
+                </div>
+                <div class="form-group">
+                    <label>Piegādātāja adrese:</label>
+                    <input type="text" id="supplierAddress">
+                </div>
+                <div class="form-group">
+                    <label>Piegādātāja valsts kods:</label>
+                    <input type="text" id="supplierCountry" value="LV" disabled class="lockable-input">
+                </div>
+                <div class="form-group advancedSection hidden-locked">
+                    <label>Piegādātāja reģistrācijas nosaukums:</label>
+                    <input type="text" id="supplierRegistrationName" disabled class="lockable-input">
+                </div>
+                <div class="form-group">
+                    <label>PVN maksātāja numurs:</label>
+                    <input type="text" id="supplierCompanyId">
+                </div>
+                <div class="form-group advancedSection hidden-locked">
+                    <label>Nodokļu maksāšanas veids:</label>
+                    <input type="text" id="supplierVatNumber" disabled class="lockable-input" value="VAT">
+                </div>
+            </div>
+
+            <!-- Customer Section -->
+            <div class="section">
+                <h2>Informācija par pasūtītāju</h2>
+                <div class="form-group advancedSection hidden-locked">
+                    <label>Endpoint ID:</label>
+                    <input type="text" id="customerEndpointId" disabled class="lockable-input">
+                </div>
+                <div class="form-group">
+                    <label>Pasūtītāja reģistrācijas numurs:</label>
+                    <input type="text" id="customerPartyId" oninput="syncCustomerIds(this.value)">
+                </div>
+                <div class="form-group">
+                    <label>Pasūtītāja nosaukums:</label>
+                    <input type="text" id="customerName" oninput="syncCustomerName(this.value)">
+                </div>
+                <div class="form-group">
+                    <label>Pasūtītāja adrese:</label>
+                    <input type="text" id="customerAddress">
+                </div>
+                <div class="form-group">
+                    <label>Pasūtītāja valsts kods:</label>
+                    <input type="text" id="customerCountry" value="LV" disabled class="lockable-input">
+                </div>
+                <div class="form-group advancedSection hidden-locked">
+                    <label>Pasūtītāja reģistrācijas nosaukums:</label>
+                    <input type="text" id="customerRegistrationName" disabled class="lockable-input">
+                </div>
+                <div class="form-group">
+                    <label>PVN maksātāja numurs:</label>
+                    <input type="text" id="customerCompanyId">
+                </div>
+                <div class="form-group advancedSection hidden-locked">
+                    <label>Nodokļu maksāšanas veids:</label>
+                    <input type="text" id="customerVatNumber" value="VAT" disabled class="lockable-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Maksājuma informācija</h2>
+            <div class="form-group advancedSection hidden-locked" >
+                <label>Maksājuma veida kods:</label>
+                <input type="text" id="paymentMeansCode" value="30" disabled class="lockable-input">
+            </div>
+            
+            <!-- Payee Section -->
+            <div style="margin-top: 20px; padding-top: 10px; border-top: 1px solid #eee;">
+                <h3 style="margin-bottom: 15px;">Maksājuma saņēmējs</h3>
+                <div class="form-group">
+                    <label>Konta numurs:</label>
+                    <input type="text" id="payeeAccountId">
+                </div>
+                <div class="form-group">
+                    <label>Bankas kods:</label>
+                    <input type="text" id="payeeFinancialInstitutionId">
+                </div>
+            </div>
+
+            <!-- Payer Section -->
+            <div style="margin-top: 20px; padding-top: 10px; border-top: 1px solid #eee;">
+                <h3 style="margin-bottom: 15px;">Maksātājs</h3>
+                <div class="form-group">
+                    <label>Konta numurs:</label>
+                    <input type="text" id="payerAccountId">
+                </div>
+                <div class="form-group">
+                    <label>Bankas kods:</label>
+                    <input type="text" id="payerFinancialInstitutionId">
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Pasūtījuma pozīcijas</h2>
+            <div class="item-row item-header">
+                <div>Nosaukums</div>
+                <div>Apjoms</div>
+                <div>Mērvienības kods</div>
+                <div>Cena</div>
+                <div>PVN %</div>
+                <div>Kopā</div>
+                <div></div>
+            </div>
+            <div id="itemsContainer"></div>
+            <button onclick="addItem()">Pievienot pozīciju</button>
+            
+            <div class="totals">
+                <div>Kopā par katru: <span id="subtotal">0.00</span> EUR</div>
+                <div>PVN: <span id="vatAmount">0.00</span> EUR</div>
+                <div>Kopā: <span id="total">0.00</span> EUR</div>
+                <div>Avansa apjoms: <input type="number" id="prepaidAmount" value="0" style="width: 100px" onchange="calculateTotals()"> EUR</div>
+                <div>Maksājums: <span id="payableAmount">0.00</span> EUR</div>
+            </div>
+        </div>
+
+		<div id="warningBox" style="color: red; margin-top: 10px;"></div>
+        <button onclick="generateXML()" style="margin-top: 20px; width: 100%;">Ģenerēt strukturēto rēķinu</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
