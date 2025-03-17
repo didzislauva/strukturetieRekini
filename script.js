@@ -90,7 +90,23 @@ function renderItems() {
         <div class="item-row">
             <input type="text" value="${item.name}" onchange="updateItem(${index}, 'name', this.value)">
             <input type="number" step="0.01" value="${item.quantity}" onchange="updateItem(${index}, 'quantity', this.value)">
-            <input type="text" disabled class="lockable-input" value="${item.unitCode}" onchange="updateItem(${index}, 'unitCode', this.value)">
+            
+            <!-- Dropdown for unitCode -->
+            <select onchange="updateItem(${index}, 'unitCode', this.value)">
+                <option value="H87" ${item.unitCode === 'H87' ? 'selected' : ''}>Gabals</option>
+                <option value="KGM" ${item.unitCode === 'KGM' ? 'selected' : ''}>Kilograms</option>
+                <option value="MTR" ${item.unitCode === 'MTR' ? 'selected' : ''}>Metrs</option>
+                <option value="LTR" ${item.unitCode === 'LTR' ? 'selected' : ''}>Litrs</option>
+                <option value="MTK" ${item.unitCode === 'MTK' ? 'selected' : ''}>Kvadrātmetrs</option>
+                <option value="MTQ" ${item.unitCode === 'MTQ' ? 'selected' : ''}>Kubikmetrs</option>
+                <option value="KTM" ${item.unitCode === 'KTM' ? 'selected' : ''}>Kilometrs</option>
+                <option value="TNE" ${item.unitCode === 'TNE' ? 'selected' : ''}>Tonna (metric ton)</option>
+                <option value="KWH" ${item.unitCode === 'KWH' ? 'selected' : ''}>Kilovatstunda</option>
+                <option value="DAY" ${item.unitCode === 'DAY' ? 'selected' : ''}>Diena</option>
+                <option value="HUR" ${item.unitCode === 'HUR' ? 'selected' : ''}>Stunda</option>
+                <option value="MIN" ${item.unitCode === 'MIN' ? 'selected' : ''}>Minūte</option>
+            </select>
+
             <input type="number" step="0.01" value="${item.price}" onchange="updateItem(${index}, 'price', this.value)">
             <input type="number" value="${item.vatRate}" onchange="updateItem(${index}, 'vatRate', this.value)">
             <div>${((parseFloat(item.quantity) || 0) * (parseFloat(item.price) || 0)).toFixed(2)}</div>
@@ -99,6 +115,7 @@ function renderItems() {
     `).join('');
     calculateTotals();
 }
+
 
 window.addEventListener('load', (event) => {
     setTimeout(() => {
